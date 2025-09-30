@@ -42,5 +42,5 @@ Grupo 7 - Duoc UC
 
 ---
 
-¡Listo para gestionar tu cartelera de cine!
+¡Listo para gestionar tu cartelera de cine! 
 
