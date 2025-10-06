@@ -6,6 +6,7 @@ package com.grupo7.magenta.views;
 
 import com.grupo7.magenta.controller.PeliculaController;
 import com.grupo7.magenta.models.Pelicula;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -19,6 +20,9 @@ public class JFrameCRUD extends javax.swing.JFrame {
     private PeliculaController peliculaController = new PeliculaController();
     private DefaultTableModel tableModel;
     private boolean idFieldEnabledOnce = false;
+
+    // Lista original de películas para filtros
+    private List<Pelicula> peliculasOriginales;
 
     private void clearFields(){
         txt_id.setText("");
@@ -109,6 +113,9 @@ public class JFrameCRUD extends javax.swing.JFrame {
     private void cargarTabla() {
         try {
             List<Pelicula> lista = peliculaController.listarPeliculas();
+            // Actualizar también la lista original para filtros
+            peliculasOriginales = new ArrayList<>(lista);
+
             tableModel.setRowCount(0);
             for (Pelicula p : lista) {
                 tableModel.addRow(new Object[]{p.getId(), p.getTitulo(), p.getDirector(), p.getAnio(), p.getDuracion(), p.getGenero()});
@@ -143,6 +150,7 @@ public class JFrameCRUD extends javax.swing.JFrame {
         initComponents();
         configurarTabla();
         configurarValidacionesEnTiempoReal();
+        configurarFiltros(); // Agregar configuración de filtros
         txt_id.setEnabled(false); // Bloquea el campo ID al iniciar
 
         // Configurar tooltips para ayudar al usuario
@@ -205,6 +213,16 @@ public class JFrameCRUD extends javax.swing.JFrame {
         btn_save3 = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
         btn_clear = new javax.swing.JButton();
+        btn_filter = new javax.swing.JButton();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        cbx_filter_gender = new javax.swing.JComboBox<>();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        btn_cleanFilter = new javax.swing.JButton();
+        txt_filterdate_2 = new javax.swing.JTextField();
+        txt_filterdate_1 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -286,10 +304,49 @@ public class JFrameCRUD extends javax.swing.JFrame {
             }
         });
 
+        btn_filter.setText("Filtrar");
+        btn_filter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_filterActionPerformed(evt);
+            }
+        });
+
+        jLabel9.setText("Filtros:");
+
+        jLabel10.setText("Genero:");
+
+        cbx_filter_gender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbx_filter_gender.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbx_filter_genderActionPerformed(evt);
+            }
+        });
+
+        jLabel11.setText("Fecha:");
+
+        jLabel12.setText("Desde:");
+
+        jLabel13.setText("Hasta:");
+
+        btn_cleanFilter.setText("Borrar Filtros");
+        btn_cleanFilter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_cleanFilterActionPerformed(evt);
+            }
+        });
+
+        txt_filterdate_1.setText("    ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btn_save2, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(222, 222, 222)
+                .addComponent(btn_save3, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(217, 217, 217))
             .addGroup(layout.createSequentialGroup()
                 .addGap(48, 48, 48)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -328,17 +385,32 @@ public class JFrameCRUD extends javax.swing.JFrame {
                                     .addComponent(btn_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addComponent(txt_tittle, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addComponent(jLabel8))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 158, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 126, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 820, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(60, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btn_save2, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(224, 224, 224)
-                        .addComponent(btn_save3, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(208, 208, 208))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel10)
+                                .addGap(18, 18, 18)
+                                .addComponent(cbx_filter_gender, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(45, 45, 45)
+                                .addComponent(jLabel11)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel12))
+                            .addComponent(jLabel9))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txt_filterdate_1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel13)
+                                .addGap(18, 18, 18)
+                                .addComponent(txt_filterdate_2, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(103, 103, 103)
+                                .addComponent(btn_cleanFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btn_filter, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane2))
+                .addContainerGap(90, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -347,11 +419,22 @@ public class JFrameCRUD extends javax.swing.JFrame {
                 .addComponent(jLabel6)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel8)
-                .addGap(32, 32, 32)
+                .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_save2)
-                    .addComponent(btn_save3))
-                .addGap(33, 33, 33)
+                    .addComponent(jLabel9)
+                    .addComponent(btn_filter))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel10)
+                        .addComponent(cbx_filter_gender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel11)
+                        .addComponent(jLabel12)
+                        .addComponent(jLabel13)
+                        .addComponent(txt_filterdate_2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txt_filterdate_1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btn_cleanFilter))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -385,7 +468,11 @@ public class JFrameCRUD extends javax.swing.JFrame {
                             .addComponent(btn_save)
                             .addComponent(btn_clear)))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(102, Short.MAX_VALUE))
+                .addGap(28, 28, 28)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_save2)
+                    .addComponent(btn_save3))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
 
         pack();
@@ -518,6 +605,20 @@ public class JFrameCRUD extends javax.swing.JFrame {
         limpiarCampos();
     }//GEN-LAST:event_btn_clearActionPerformed
 
+    private void btn_filterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_filterActionPerformed
+        aplicarFiltros();
+    }//GEN-LAST:event_btn_filterActionPerformed
+
+    private void btn_cleanFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cleanFilterActionPerformed
+        limpiarFiltros();
+    }//GEN-LAST:event_btn_cleanFilterActionPerformed
+
+    private void cbx_filter_genderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbx_filter_genderActionPerformed
+        // Filtrar automáticamente al cambiar género (opcional)
+        // Uncomment the next line if you want auto-filter on genre change
+        // aplicarFiltros();
+    }//GEN-LAST:event_cbx_filter_genderActionPerformed
+
 
     /**
      * @param args the command line arguments
@@ -556,12 +657,19 @@ public class JFrameCRUD extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_buscar;
+    private javax.swing.JButton btn_cleanFilter;
     private javax.swing.JButton btn_clear;
+    private javax.swing.JButton btn_filter;
     private javax.swing.JButton btn_save;
     private javax.swing.JButton btn_save2;
     private javax.swing.JButton btn_save3;
+    private javax.swing.JComboBox<String> cbx_filter_gender;
     private javax.swing.JComboBox<String> cbx_gender;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -569,12 +677,153 @@ public class JFrameCRUD extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable2;
     private javax.swing.JTextField txt_director;
     private javax.swing.JTextField txt_duration;
+    private javax.swing.JTextField txt_filterdate_1;
+    private javax.swing.JTextField txt_filterdate_2;
     private javax.swing.JTextField txt_id;
     private javax.swing.JTextField txt_tittle;
     private javax.swing.JTextField txt_year;
     // End of variables declaration//GEN-END:variables
+
+    // Método para configurar los filtros
+    private void configurarFiltros() {
+        // Configurar ComboBox de filtro de género
+        cbx_filter_gender.removeAllItems();
+        cbx_filter_gender.addItem("Todos");
+        cbx_filter_gender.addItem("Comedia");
+        cbx_filter_gender.addItem("Drama");
+        cbx_filter_gender.addItem("Accion");
+        cbx_filter_gender.addItem("Suspenso");
+        cbx_filter_gender.addItem("Romance");
+        cbx_filter_gender.addItem("Ciencia Ficcion");
+
+        // Configurar validación solo números en campos de año
+        txt_filterdate_2.setDocument(new javax.swing.text.PlainDocument() {
+            @Override
+            public void insertString(int offs, String str, javax.swing.text.AttributeSet a) throws javax.swing.text.BadLocationException {
+                if (str.matches("\\d*") && getLength() + str.length() <= 4) {
+                    super.insertString(offs, str, a);
+                }
+            }
+        });
+
+        txt_filterdate_2.setDocument(new javax.swing.text.PlainDocument() {
+            @Override
+            public void insertString(int offs, String str, javax.swing.text.AttributeSet a) throws javax.swing.text.BadLocationException {
+                if (str.matches("\\d*") && getLength() + str.length() <= 4) {
+                    super.insertString(offs, str, a);
+                }
+            }
+        });
+
+        // Configurar tooltips
+        cbx_filter_gender.setToolTipText("Seleccione un género para filtrar");
+        txt_filterdate_2.setToolTipText("Año desde (ej: 2000)");
+        txt_filterdate_2.setToolTipText("Año hasta (ej: 2023)");
+        btn_filter.setToolTipText("Aplicar filtros a la tabla");
+        btn_cleanFilter.setToolTipText("Limpiar todos los filtros y mostrar todas las películas");
+    }
+
+    // Método para aplicar filtros
+    private void aplicarFiltros() {
+        try {
+            // Si no hay películas originales, cargarlas
+            if (peliculasOriginales == null) {
+                peliculasOriginales = peliculaController.listarPeliculas();
+            }
+
+            List<Pelicula> peliculasFiltradas = new ArrayList<>(peliculasOriginales);
+
+            // Filtro por género
+            String generoSeleccionado = (String) cbx_filter_gender.getSelectedItem();
+            if (generoSeleccionado != null && !generoSeleccionado.equals("Todos")) {
+                peliculasFiltradas = peliculasFiltradas.stream()
+                    .filter(pelicula -> pelicula.getGenero().equals(generoSeleccionado))
+                    .collect(java.util.stream.Collectors.toList());
+            }
+
+            // Filtro por rango de años
+            String anioDesdeStr = txt_filterdate_2.getText().trim();
+            String anioHastaStr = txt_filterdate_2.getText().trim();
+
+            if (!anioDesdeStr.isEmpty() || !anioHastaStr.isEmpty()) {
+                int anioDesde = anioDesdeStr.isEmpty() ? 1900 : Integer.parseInt(anioDesdeStr);
+                int anioHasta = anioHastaStr.isEmpty() ? 2030 : Integer.parseInt(anioHastaStr);
+
+                // Validar que el rango sea correcto
+                if (anioDesde > anioHasta) {
+                    JOptionPane.showMessageDialog(this,
+                        "El año 'Desde' no puede ser mayor que el año 'Hasta'",
+                        "Error en filtros",
+                        JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                peliculasFiltradas = peliculasFiltradas.stream()
+                    .filter(pelicula -> pelicula.getAnio() >= anioDesde && pelicula.getAnio() <= anioHasta)
+                    .collect(java.util.stream.Collectors.toList());
+            }
+
+            // Actualizar tabla con resultados filtrados
+            actualizarTablaConFiltros(peliculasFiltradas);
+
+            // Mostrar mensaje con resultados
+            if (peliculasFiltradas.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                    "No se encontraron películas que coincidan con los filtros aplicados.",
+                    "Filtros aplicados",
+                    JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this,
+                    "Filtros aplicados correctamente. Se encontraron " + peliculasFiltradas.size() + " película(s).",
+                    "Filtros aplicados",
+                    JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this,
+                "Por favor, ingrese años válidos (solo números).",
+                "Error en filtros",
+                JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                "Error al aplicar filtros: " + ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Método para actualizar tabla con películas filtradas
+    private void actualizarTablaConFiltros(List<Pelicula> peliculas) {
+        tableModel.setRowCount(0);
+        for (Pelicula p : peliculas) {
+            tableModel.addRow(new Object[]{
+                p.getId(),
+                p.getTitulo(),
+                p.getDirector(),
+                p.getAnio(),
+                p.getDuracion(),
+                p.getGenero()
+            });
+        }
+    }
+
+    // Método para limpiar filtros
+    private void limpiarFiltros() {
+        cbx_filter_gender.setSelectedIndex(0); // "Todos"
+        txt_filterdate_2.setText("");
+        txt_filterdate_2.setText("");
+
+        // Recargar tabla completa
+        cargarTabla();
+
+        JOptionPane.showMessageDialog(this,
+            "Filtros limpiados. Mostrando todas las películas.",
+            "Filtros",
+            JOptionPane.INFORMATION_MESSAGE);
+    }
 }
