@@ -447,19 +447,34 @@ public class JFrameCRUD extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "ID no encontrado. No se puede actualizar.", "Actualizar", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        boolean resultado = peliculaController.actualizarPelicula(
-            Integer.parseInt(idStr),
-            txt_tittle.getText(),
-            txt_director.getText(),
-            txt_year.getText(),
-            txt_duration.getText(),
-            cbx_gender.getSelectedItem().toString()
+
+        // Confirmación previa antes de actualizar
+        int confirmacion = JOptionPane.showConfirmDialog(
+            this,
+            "¿Está seguro de que desea actualizar la película '" + pelicula.getTitulo() + "'?\nLos datos actuales serán reemplazados.",
+            "Confirmar actualización",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
         );
-        if (resultado) {
-            JOptionPane.showMessageDialog(this, "Película actualizada correctamente.", "Actualizar", JOptionPane.INFORMATION_MESSAGE);
-            clearFields();
-            cargarTabla();
+
+        // Solo proceder si el usuario confirma la actualización
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            boolean resultado = peliculaController.actualizarPelicula(
+                Integer.parseInt(idStr),
+                txt_tittle.getText(),
+                txt_director.getText(),
+                txt_year.getText(),
+                txt_duration.getText(),
+                cbx_gender.getSelectedItem().toString()
+            );
+            if (resultado) {
+                JOptionPane.showMessageDialog(this, "Película actualizada correctamente.", "Actualizar", JOptionPane.INFORMATION_MESSAGE);
+                clearFields();
+                cargarTabla();
+            }
         }
+        // Si el usuario cancela (NO_OPTION), no se hace nada
+
     }//GEN-LAST:event_btn_save2ActionPerformed
 
     private void btn_save3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_save3ActionPerformed
@@ -475,10 +490,25 @@ public class JFrameCRUD extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "ID no encontrado. No se puede eliminar.", "Eliminar", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            peliculaController.eliminarPelicula(id);
-            JOptionPane.showMessageDialog(this, "Película eliminada correctamente.", "Eliminar", JOptionPane.INFORMATION_MESSAGE);
-            clearFields();
-            cargarTabla();
+
+            // Confirmación previa antes de eliminar
+            int confirmacion = JOptionPane.showConfirmDialog(
+                this,
+                "¿Está seguro de que desea eliminar la película '" + pelicula.getTitulo() + "'?\nEsta acción no se puede deshacer.",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            // Solo proceder si el usuario confirma la eliminación
+            if (confirmacion == JOptionPane.YES_OPTION) {
+                peliculaController.eliminarPelicula(id);
+                JOptionPane.showMessageDialog(this, "Película eliminada correctamente.", "Eliminar", JOptionPane.INFORMATION_MESSAGE);
+                clearFields();
+                cargarTabla();
+            }
+            // Si el usuario cancela (NO_OPTION), no se hace nada
+
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
