@@ -701,7 +701,17 @@ public class JFrameCRUD extends javax.swing.JFrame {
         cbx_filter_gender.addItem("Romance");
         cbx_filter_gender.addItem("Ciencia Ficcion");
 
-        // Configurar validación solo números en campos de año
+        // Configurar validación solo números en campo "Desde"
+        txt_filterdate_1.setDocument(new javax.swing.text.PlainDocument() {
+            @Override
+            public void insertString(int offs, String str, javax.swing.text.AttributeSet a) throws javax.swing.text.BadLocationException {
+                if (str.matches("\\d*") && getLength() + str.length() <= 4) {
+                    super.insertString(offs, str, a);
+                }
+            }
+        });
+
+        // Configurar validación solo números en campo "Hasta"
         txt_filterdate_2.setDocument(new javax.swing.text.PlainDocument() {
             @Override
             public void insertString(int offs, String str, javax.swing.text.AttributeSet a) throws javax.swing.text.BadLocationException {
@@ -711,18 +721,9 @@ public class JFrameCRUD extends javax.swing.JFrame {
             }
         });
 
-        txt_filterdate_2.setDocument(new javax.swing.text.PlainDocument() {
-            @Override
-            public void insertString(int offs, String str, javax.swing.text.AttributeSet a) throws javax.swing.text.BadLocationException {
-                if (str.matches("\\d*") && getLength() + str.length() <= 4) {
-                    super.insertString(offs, str, a);
-                }
-            }
-        });
-
-        // Configurar tooltips
+        // Configurar tooltips correctamente
         cbx_filter_gender.setToolTipText("Seleccione un género para filtrar");
-        txt_filterdate_2.setToolTipText("Año desde (ej: 2000)");
+        txt_filterdate_1.setToolTipText("Año desde (ej: 2000)");
         txt_filterdate_2.setToolTipText("Año hasta (ej: 2023)");
         btn_filter.setToolTipText("Aplicar filtros a la tabla");
         btn_cleanFilter.setToolTipText("Limpiar todos los filtros y mostrar todas las películas");
@@ -747,17 +748,26 @@ public class JFrameCRUD extends javax.swing.JFrame {
             }
 
             // Filtro por rango de años
-            String anioDesdeStr = txt_filterdate_2.getText().trim();
+            String anioDesdeStr = txt_filterdate_1.getText().trim();
             String anioHastaStr = txt_filterdate_2.getText().trim();
 
             if (!anioDesdeStr.isEmpty() || !anioHastaStr.isEmpty()) {
-                int anioDesde = anioDesdeStr.isEmpty() ? 1900 : Integer.parseInt(anioDesdeStr);
-                int anioHasta = anioHastaStr.isEmpty() ? 2030 : Integer.parseInt(anioHastaStr);
+                int anioDesde, anioHasta;
 
-                // Validar que el rango sea correcto
-                if (anioDesde > anioHasta) {
+                if (anioDesdeStr.isEmpty() && !anioHastaStr.isEmpty()) {
+                    anioDesde = 1900;
+                    anioHasta = Integer.parseInt(anioHastaStr);
+                } else if (!anioDesdeStr.isEmpty() && anioHastaStr.isEmpty()) {
+                    anioDesde = Integer.parseInt(anioDesdeStr);
+                    anioHasta = 2030;
+                } else {
+                    anioDesde = Integer.parseInt(anioDesdeStr);
+                    anioHasta = Integer.parseInt(anioHastaStr);
+                }
+
+                if (!anioDesdeStr.isEmpty() && !anioHastaStr.isEmpty() && anioDesde > anioHasta) {
                     JOptionPane.showMessageDialog(this,
-                        "El año 'Desde' no puede ser mayor que el año 'Hasta'",
+                        "El año 'Desde' (" + anioDesde + ") no puede ser mayor que el año 'Hasta' (" + anioHasta + ")",
                         "Error en filtros",
                         JOptionPane.WARNING_MESSAGE);
                     return;
@@ -815,7 +825,7 @@ public class JFrameCRUD extends javax.swing.JFrame {
     // Método para limpiar filtros
     private void limpiarFiltros() {
         cbx_filter_gender.setSelectedIndex(0); // "Todos"
-        txt_filterdate_2.setText("");
+        txt_filterdate_1.setText("");
         txt_filterdate_2.setText("");
 
         // Recargar tabla completa
