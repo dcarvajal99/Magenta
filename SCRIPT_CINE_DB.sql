@@ -32,7 +32,22 @@ INSERT INTO Cartelera (titulo, director, anio, duracion, genero) VALUES
 ('Interestelar', 'Christopher Nolan', 2014, 169, 'Ciencia Ficcion'),
 ('Joker', 'Todd Phillips', 2019, 122, 'Drama'),
 ('La La Land', 'Damien Chazelle', 2016, 128, 'Romance'),
-('Avengers', 'Joss Whedon', 2012, 143, 'Accion');
+('Avengers', 'Joss Whedon', 2012, 143, 'Accion'),
+('Gladiador', 'Ridley Scott', 2000, 155, 'Accion'),
+('Forrest Gump', 'Robert Zemeckis', 1994, 142, 'Drama'),
+('Inception', 'Christopher Nolan', 2010, 148, 'Ciencia Ficcion'),
+('El Rey Leon', 'Roger Allers', 1994, 88, 'Animacion'),
+('Pulp Fiction', 'Quentin Tarantino', 1994, 154, 'Crimen'),
+('Amelie', 'Jean-Pierre Jeunet', 2001, 122, 'Comedia'),
+('El Laberinto del Fauno', 'Guillermo del Toro', 2006, 118, 'Fantasia'),
+('La Lista de Schindler', 'Steven Spielberg', 1993, 195, 'Drama'),
+('Jurassic Park', 'Steven Spielberg', 1993, 127, 'Aventura'),
+('Buscando a Nemo', 'Andrew Stanton', 2003, 100, 'Animacion'),
+('Los Increibles', 'Brad Bird', 2004, 115, 'Animacion'),
+('El Gran Hotel Budapest', 'Wes Anderson', 2014, 99, 'Comedia'),
+('Coco', 'Lee Unkrich', 2017, 105, 'Animacion'),
+('La Forma del Agua', 'Guillermo del Toro', 2017, 123, 'Fantasia'),
+('Parasite', 'Bong Joon-ho', 2019, 132, 'Drama');
 
 -- Mostrar mensaje de confirmación
 SELECT 'Base de datos Cine_DB, tabla Cartelera y registros de prueba creados exitosamente' AS Resultado;
